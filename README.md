@@ -45,6 +45,6 @@ If a buffer overrun occurs, SerialBuf::isOverflow() will return true.
       if (sbuf.isOverflow()) {
         Serial.println(F("Overflow occurred."));
       }
-      Serial.println(sbuf.buffer);
+      Serial.println(sbuf.buffer);    // buffer automatically null-terminates incoming data, so you can print
     }
   
