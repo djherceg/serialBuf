@@ -15,7 +15,7 @@ In binary mode, SerialBuf stores any bytes received over Serial. Reception ends 
 In text mode, SerialBuf stores any bytes received over Serial, except CR, which is ignored, and LF, which signals the end of reception.
 Afterwards, the contents of the buffer can be read by the main program.
 
-Timeout depends on the sender - how long does the sender wait between transmissions? Values between 20 and 500ms are reasonalbe, but anything goes.
+Timeout depends on the sender - how long does the sender wait between transmissions? Values between 20 and 500ms are reasonable, but anything goes.
 
 
 Usage
