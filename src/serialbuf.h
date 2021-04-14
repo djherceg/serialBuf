@@ -1,6 +1,6 @@
 //
-//  SerialBuf v1.0.002
-//  17.12.2020
+//  SerialBuf v1.0.005
+//  14.4.2021
 //  Djordje Herceg
 //
 
@@ -15,70 +15,76 @@
 class SerialBuf
 {
 private:
-    size_t maxbuf;                          // velicina bafera
-    bool overflow;
+    size_t maxbuf;                          // buffer size
+    bool overflow;                          // data overflow detected on reception
     uint32_t mils;
-    uint32_t stopInterval = 50;             // interval nakon zadnjeg primljenog karaktera kada se poruka racuna kao zavrsena
-    bool finished;
-    size_t length;                          // duzina sadrzaja u baferu
-    size_t position;                        // trenutna pozicija u baferu
-    int mode = SERIALBUF_TEXTMODE;          // BINARYMODE or TEXTMODE (recognize CR+LF or LF as End-of-line)
+    uint32_t timeout = 50;                  // timeout interval in milliseconds for reception in BINARYMODE
+    bool finished;                          // reception finished
+    size_t length;                          // actual content length
+    size_t position;                        // current position
+    int mode = SERIALBUF_TEXTMODE;          // BINARYMODE or TEXTMODE (recognize CR+LF or LF as End-of-line and End-of-reception)
 
 public:
-    /** Inicijalizuje bafer zadate velicine u TEXTMODE */
+    /** Initialize buffer of specified size in TEXTMODE */
     void init(size_t buflen);
 
-    /** Inicijalizuje bafer zadate velicine u BINARYMODE sa zadatim stop intervalom */
-    void init(size_t buflen, uint32_t stopinterval);
+    /** Intialize buffer with the specified size, mode and timeout */
+    void init(size_t buflen, int Mode, uint32_t Timeout);
 
     /** Disposes of the buffer */
     ~SerialBuf();
 
-    /** Brise bafer */
+    /** Clears the buffer */
     void clear();
 
-    /** Prebacuje bafer u TEXT mod. ceka da se red zavrsi znakom LF, ignorise CR */
+    /** Switch to TEXT mode. Reception is finished when LF is encountered. CR is ignored. */
     void textMode();
 
-    /** Prebacuje bafer u BINARY mod. ceka stopInterval milisekundi a onda proglasava kraj unosa */
+    /** Switch to BINARY mode. Receptions is finished when nothing is received for [stopInterval] milliseconds. */
     void binaryMode();
 
-    /** Vraca mod bafera: SERIALBUF_TEXTMODE ili SERIALBUF_BINARYMODE */
+    /** Gets buffer mode: SERIALBUF_TEXTMODE or SERIALBUF_BINARYMODE */
     int getMode();
 
-    /** Poziva se stalno radi prihvata karaktera sa serijskog porta */
+    /** Must be called frequently to receive serial data. */
     void loop();
 
-    /** Vraca karakter na poziciji+offset ili -1 ako ne postoji */
-    int peek(size_t offset);                 // karakter na position+offset ili -1 ako ne postoji
+    /** Returns the character at [position]+offset or -1 if it doesn't exist. */
+    int peek(size_t offset);                 
 
     
-    /** Da li postoji karakter na poziciji */
-    bool iscurrent();           // da li postoji karakter na position
+    /** A character exists at [position] */
+    bool isCurrent();           
 
-    /** Da li postoji karakter na poziciji+1 */
-    bool isnext();              // da li postoji karakter na position+1
+    /** A character exists at [position]+1 */
+    bool isNext();              
 
-    /** cita jedan karakter iz bafera ili vraca -1 ako nema vise */
-    int read();                 // cita jedan karakter iz bafera ili vraca -1 ako nema vise
+    /** Returns the next charater from the buffer or -1 if it doesn't exist. */
+    int read();                 
 
-    /** Da li bafer sadrzi jos najmanje n karaktera */
-    bool isnextn(size_t n);        
+    /** At least n more characters exist at [position] */
+    bool isNextn(size_t n);        
 
-    /** Da li je bafer prepunjen */
-    bool isoverflow();          // da li je bafer prepunjen preko kapaciteta
+    /** Data overflow occured on reception */
+    bool isOverflow();          
 
-    /** Da li je bafer zavrsio prijem i sadrzi poruku */
-    bool isavailable();         // da li je bafer zavrsio prijem i sadrzi poruku
+    /** Reception finished, there is a message in the buffer */
+    bool isAvailable();        
     
-
-    char *buffer = nullptr;         // bafer
+    /** Buffer array */
+    char *buffer = nullptr;        
     
-    /** vraca duzinu sadrzaja u baferu */
+    /** Returns the length of content in the buffer */
     size_t getLength();            
     
-    /** vraca trenutnu poziciju u baferu */
+    /** Returns the current position in the buffer */
     size_t getPosition();
+
+    /** Return the maximum content size. */
+    size_t getSize();
+
+    /** Return binary mode timeout in milliseconds */
+    uint32_t getTimeout();
 };
 
 #endif
