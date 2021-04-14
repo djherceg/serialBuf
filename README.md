@@ -35,7 +35,7 @@ Then, in loop(), make sure to call SerialBuffer::loop often enough so that it do
 Check SerialBuffer::isAvailable() to determine if there is a message  waiting to be processed in the buffer. 
 Determine message length by calling SerialBuffer::getLength(). 
 Access the message contents by either calling SerialBuffer::read() or by accessing SerialBuffer::buffer directly.
-If the buffer has overflowed, SerialBuf::isOverflow() will return true.
+If a buffer overrun occurs, SerialBuf::isOverflow() will return true.
 
     sbuf.loop();
 
