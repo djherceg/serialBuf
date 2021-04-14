@@ -26,7 +26,10 @@ First, include the header file and create the SerialBuf object.
     #include "serialbuf.h"
     SerialBuf sbuf;
   
-Next, in setup(), initialize the buffer. Specify maximum buffer size, mode and timeout interval. Have in mind that one extra byte will be allocated, so that received data can be null-terminated. For example, if you specify the buffer of 10 bytes, 11 bytes will be reserved, and the byte following the last received byte will always be set to zero by the library.
+Next, in setup(), initialize the buffer. Specify maximum buffer size, mode and timeout interval. 
+Have in mind that one extra byte will be allocated, so that received data can be null-terminated. 
+For example, if you specify the buffer of 10 bytes, 11 bytes will be reserved, and the byte following the last received byte will always be 
+set to zero by the class.
 
     sbuf.init(10, SERIALBUF_BINARYMODE, 2000);    // NOTE: buffer acknowledges reception after 2000ms in binary mode
     sbuf.init(10, SERIALBUF_TEXTMODE, 2000);
@@ -48,3 +51,5 @@ If a buffer overrun occurs, SerialBuf::isOverflow() will return true.
       Serial.println(sbuf.buffer);    // buffer automatically null-terminates incoming data, so you can print
     }
   
+Note that the buffer can only be read once and forward, byte by byte, using SerialBuf::read(). 
+However, you can access its contents via SerialBuf::buffer anytime. 

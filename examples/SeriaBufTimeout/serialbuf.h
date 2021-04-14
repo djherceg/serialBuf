@@ -40,7 +40,7 @@ public:
     /** Switch to TEXT mode. Reception is finished when LF is encountered. CR is ignored. */
     void textMode();
 
-    /** Switch to BINARY mode. Receptions is finished when nothing is received for [stopInterval] milliseconds. */
+    /** Switch to BINARY mode. Receptions is finished when nothing is received for [timeout] milliseconds. */
     void binaryMode();
 
     /** Gets buffer mode: SERIALBUF_TEXTMODE or SERIALBUF_BINARYMODE */
