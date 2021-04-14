@@ -1,15 +1,34 @@
+//
+//  SerialBuf v1.0.002
+//  17.12.2020
+//  Djordje Herceg
+//
+
 #include "serialbuf.h"
 #include "Arduino.h"
 
-void SerialBuf::init()
+void SerialBuf::init(size_t buflen)
 {
-    init(50);
+    init(buflen, 50);
+    textMode();
 }
 
-void SerialBuf::init(uint32_t stopInterval)
+void SerialBuf::init(size_t buflen, uint32_t stopInterval)
 {
     clear();
+    if (buffer != nullptr)
+    {
+        delete[] buffer;            // prevent memory leaks!
+    }
+    buffer = new char[buflen];
+    maxbuf = buflen;
     this->stopInterval = stopInterval;
+    binaryMode();
+}
+
+SerialBuf::~SerialBuf()
+{
+    delete[] buffer;
 }
 
 void SerialBuf::clear()
@@ -29,17 +48,32 @@ void SerialBuf::loop()
         return;
     }
 
-    if ((length > 0) && (millis() - mils > stopInterval))
+    if ((mode == SERIALBUF_BINARYMODE) && (length > 0) && (millis() - mils > stopInterval))
     {
         finished = true;
+        return;
     }
 
     while (Serial.available())
     {
         mils = millis();
+
+        int r = Serial.read();
+        if (mode == SERIALBUF_TEXTMODE)
+        {
+            if (r == 13)
+                continue;
+
+            if (r == 10)
+            {
+                finished = true;
+                return;
+            }
+        }
+
         if (length < maxbuf)
         {
-            int r = Serial.read();
+            //int r = Serial.read();
             if (r > -1)
             {
                 buffer[length++] = (char)r;
@@ -54,23 +88,28 @@ void SerialBuf::loop()
     }
 }
 
-int SerialBuf::peek()
+void SerialBuf::textMode()
 {
-    if (position < length)
-    {
-        return buffer[position];
-    }
-    else
-    {
-        return -1;
-    }
+    mode = SERIALBUF_TEXTMODE;
+    clear();
 }
 
-int SerialBuf::peeknext()
+void SerialBuf::binaryMode()
 {
-    if ((position + 1) < length)
+    mode = SERIALBUF_BINARYMODE;
+    clear();
+}
+
+int SerialBuf::getMode()
+{
+    return mode;
+}
+
+int SerialBuf::peek(size_t offset)
+{
+    if (position + offset < length)
     {
-        return buffer[position + 1];
+        return buffer[position + offset];
     }
     else
     {
@@ -88,13 +127,13 @@ bool SerialBuf::isnext()
     return (position + 1) < length;
 }
 
-bool SerialBuf::isnextn(int n)
+bool SerialBuf::isnextn(size_t n)
 {
     return (position + n) <= length;
 }
 
 /**
- * Čita karakter iz bafera ili vraća -1 ako ne postoji
+ * Cita karakter iz bafera ili vraca -1 ako ne postoji
  */
 int SerialBuf::read()
 {
@@ -114,12 +153,12 @@ bool SerialBuf::isavailable()
     return finished;
 }
 
-int SerialBuf::getLength()
+size_t SerialBuf::getLength()
 {
     return length;
 }
 
-int SerialBuf::getPosition()
+size_t SerialBuf::getPosition()
 {
     return position;
 }
