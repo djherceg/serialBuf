@@ -26,7 +26,7 @@ First, include the header file and create the SerialBuf object.
     #include "serialbuf.h"
     SerialBuf sbuf;
   
-Next, in setup(), initialize the buffer. Specify maximum buffer size, mode and timeout interval. Have in mind that one extra byte will be allocated, so that received data can be null-terminated. For example, if you specify the buffer of 10 bytes, 11 bytes will be reserved, and the last received byte will always be followed by the null character.
+Next, in setup(), initialize the buffer. Specify maximum buffer size, mode and timeout interval. Have in mind that one extra byte will be allocated, so that received data can be null-terminated. For example, if you specify the buffer of 10 bytes, 11 bytes will be reserved, and the last received byte will always be set to zero by the buffer.
 
     sbuf.init(10, SERIALBUF_BINARYMODE, 2000);    // NOTE: buffer acknowledges reception after 2000ms in binary mode
     sbuf.init(10, SERIALBUF_TEXTMODE, 2000);
