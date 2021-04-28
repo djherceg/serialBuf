@@ -1,6 +1,6 @@
 //
-//  SerialBuf v1.0.005
-//  14.4.2021
+//  SerialBuf v1.0.006
+//  15.4.2021
 //  Djordje Herceg
 //
 
@@ -25,6 +25,9 @@ private:
     int mode = SERIALBUF_TEXTMODE;          // BINARYMODE or TEXTMODE (recognize CR+LF or LF as End-of-line and End-of-reception)
 
 public:
+    /** Buffer array */
+    char *buffer = nullptr;  
+
     /** Initialize buffer of specified size in TEXTMODE */
     void init(size_t buflen);
 
@@ -71,8 +74,7 @@ public:
     /** Reception finished, there is a message in the buffer */
     bool isAvailable();        
     
-    /** Buffer array */
-    char *buffer = nullptr;        
+      
     
     /** Returns the length of content in the buffer */
     size_t getLength();            

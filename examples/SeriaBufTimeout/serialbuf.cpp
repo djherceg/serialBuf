@@ -1,6 +1,6 @@
 //
-//  SerialBuf v1.0.005
-//  14.4.2021
+//  SerialBuf v1.0.006
+//  15.4.2021
 //  Djordje Herceg
 //
 
