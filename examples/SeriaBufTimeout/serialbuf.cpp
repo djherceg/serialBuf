@@ -1,30 +1,12 @@
-//
-//  SerialBuf v1.0.006
-//  15.4.2021
-//  Djordje Herceg
-//
-
-/*
-   Serial buffer is in TEXTMODE, i.e. reception finishes when LF is received.
-   CR is ignored. Data exceeding buffer length is ignored, but the overflow flag is set.
-*/
-
 #include "serialbuf.h"
 #include "Arduino.h"
 
-void SerialBuf::init(size_t buflen)
-{
-  init(buflen, SERIALBUF_TEXTMODE, 50);
-}
 
-void SerialBuf::init(size_t buflen, int Mode, uint32_t Timeout)
+SerialBuf::SerialBuf(size_t buflen, int Mode = SERIALBUF_TEXTMODE, uint32_t Timeout = 50)
 {
-  if (buffer != nullptr)
-  {
-    delete[] buffer;              // prevent memory leaks!
-  }
-  buffer = new char[buflen + 1];  // plus one byte for the null char!
-  maxbuf = buflen;
+  maxlen = buflen;
+  array = new ByteArray(maxlen + 1);
+
   this->timeout = Timeout;
   mode = Mode;                    // SERIALBUF_BINARYMODE or SERIALBUF_TEXTMODE
   clear();
@@ -32,22 +14,18 @@ void SerialBuf::init(size_t buflen, int Mode, uint32_t Timeout)
 
 SerialBuf::~SerialBuf()
 {
-  delete[] buffer;
+  delete array;
 }
 
-size_t SerialBuf::getSize() {
-  return maxbuf;
-}
+
 
 void SerialBuf::clear()
 {
   overflow = false;
   finished = false;
-  length = 0;
   position = 0;
-  if (buffer != nullptr) {
-    buffer[0] = 0; // null-terminate
-  }
+  array->clear();
+
   mils = millis();
 }
 
@@ -58,42 +36,41 @@ void SerialBuf::loop()
     return;
   }
 
-  if ((mode == SERIALBUF_BINARYMODE) && (length > 0) && (millis() - mils > timeout))
+  if ((mode == SERIALBUF_BINARYMODE) && (array->getLen() > 0) && (millis() - mils > timeout))
   {
     finished = true;
-    buffer[length] = 0;
+    array->nullTerminate();
     return;
   }
 
-  if (Serial.available()) {
-    while (Serial.available())
+  while (Serial.available())
+  {
+    mils = millis();
+
+    int r = Serial.read();
+    if (mode == SERIALBUF_TEXTMODE)
     {
-      int r = Serial.read();
-      if (mode == SERIALBUF_TEXTMODE)
-      {
-        if (r == 13)
-          continue;
+      if (r == 10)
+        continue;
 
-        if (r == 10)
-        {
-          finished = true;
-          buffer[length] = 0; // null-terminate
-          return;
-        }
+      if (r == 13)
+      {
+        finished = true;
+        array->nullTerminate();
+        return;
       }
+    }
 
-      if (length < maxbuf)
+    if (r > -1) {
+      if (array->getLen() < maxlen)
       {
-        if (r > -1) {
-          buffer[length++] = (char)r;
-        }
+        array->append((char)r);
       }
       else
       {
         overflow = true;
       }
     }
-    mils = millis();
   }
 }
 
@@ -116,9 +93,9 @@ int SerialBuf::getMode()
 
 int SerialBuf::peek(size_t offset)
 {
-  if (position + offset < length)
+  if (position + offset < array->getLen())
   {
-    return buffer[position + offset];
+    return (int)(*array)[position + offset];
   }
   else
   {
@@ -128,17 +105,17 @@ int SerialBuf::peek(size_t offset)
 
 bool SerialBuf::isCurrent()
 {
-  return position < length;
+  return position < array->getLen();
 }
 
 bool SerialBuf::isNext()
 {
-  return (position + 1) < length;
+  return (position + 1) < array->getLen();
 }
 
 bool SerialBuf::isNextn(size_t n)
 {
-  return (position + n) <= length;
+  return (position + n) <= array->getLen();
 }
 
 
@@ -148,7 +125,7 @@ int SerialBuf::read()
   if (!isCurrent())
     return -1;
 
-  return buffer[position++];
+  return (int)(*array)[position++];
 }
 
 bool SerialBuf::isOverflow()
@@ -163,7 +140,7 @@ bool SerialBuf::isAvailable()
 
 size_t SerialBuf::getLength()
 {
-  return length;
+  return array->getLen();
 }
 
 size_t SerialBuf::getPosition()
@@ -171,8 +148,17 @@ size_t SerialBuf::getPosition()
   return position;
 }
 
+size_t SerialBuf::getSize() {
+  return maxlen;
+}
 
 uint32_t SerialBuf::getTimeout()
 {
   return timeout;
+}
+
+
+char *SerialBuf::getBuffer()
+{
+  return array->buffer;
 }

@@ -1,12 +1,12 @@
 #include "serialbuf.h"
 
-SerialBuf sbuf;
+SerialBuf sbuf(10, SERIALBUF_TEXTMODE, 2000);
 
 void setup() {
   Serial.begin(115200);
   // Uncomment one line, and comment the other one to try the buffer in TEXTMODE or BINARYMODE:
   //sbuf.init(10, SERIALBUF_BINARYMODE, 2000);    // NOTE: buffer acknowledges reception after 2000ms in binary mode
-  sbuf.init(10, SERIALBUF_TEXTMODE, 2000);
+  //sbuf.init(10, SERIALBUF_TEXTMODE, 2000);
 
   Serial.print(F("SerialBuffer demo\nBuffer size is "));
   Serial.print(sbuf.getSize());
@@ -27,11 +27,11 @@ void loop() {
 
     // We assume that any data received on Serial will be terminated with CR+LF.
     // Binary mode transmits everything, including CR+LF. Text mode ignores CR+LF.
-    if (strcmp(sbuf.buffer, "text\r\n") == 0) {   
+    if (strcmp(sbuf.getBuffer(), "text\r\n") == 0) {   
       sbuf.textMode();
       Serial.println(F("Switched to text. Finish entry with CR+LF."));
       return;
-    } else if (strcmp(sbuf.buffer, "bin") == 0) {
+    } else if (strcmp(sbuf.getBuffer(), "bin") == 0) {
       sbuf.binaryMode();
       Serial.print(F("Switched to binary. Reception timeout is ")); 
       Serial.print(sbuf.getTimeout());
@@ -40,7 +40,7 @@ void loop() {
     }
 
     if (sbuf.getMode() == SERIALBUF_TEXTMODE) {
-      Serial.println(sbuf.buffer);
+      Serial.println(sbuf.getBuffer());
     }
     else
     {
