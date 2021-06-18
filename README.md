@@ -4,7 +4,7 @@ Arduino buffer for receiving incoming serial data
 
 Version 2.0.1 / 18.6.2021.
 
-The SerialBuf class implements a simple byte-array buffer of a fixed size, which stores bytes received over Serial. When reception is complete, the buffer can be read by the application.
+The SerialBuf class implements a simple byte-array buffer of a fixed size, which stores bytes received over Serial. When reception is complete, the buffer can be read by the application. The buffer is build around a ByteArray instance, which must be created beforehand.
 
 
 Modes: Binary and Text
@@ -22,13 +22,15 @@ Timeout depends on the sender - how long does the sender wait between transmissi
 Usage
 =====
 
-First, include the header file and create the SerialBuf object. Specify maximum buffer size, mode and timeout interval. Have in mind that one 
-extra byte will be allocated, so that received data can be null-terminated. 
-For example, if you specify the buffer of 10 bytes, 11 bytes will be reserved, and the byte following the last received byte will always be 
-set to zero by the class.
+First, include the header file and create the ByteArray and SerialBuf objects. Specify array size, mode and timeout interval. Have in mind that one 
+extra byte must be allocated for the array, so that received data can be null-terminated. 
+For example, if you need a buffer of 10 bytes, 11 bytes must be reserved. The byte following the last received byte will always be 
+set to zero automatically by the buffer.
 
     #include "serialbuf.h"
-    SerialBuf sbuf(10, SERIALBUF_TEXTMODE, 2000);
+    
+    ByteArray barr(11);   // 10 chars for buffer, 1 char for null-termination of strings
+    SerialBuf sbuf(barr, SERIALBUF_TEXTMODE, 2000);
   
   
 Then, in loop(), make sure to call SerialBuffer::loop often enough so that it doesn't miss incoming serial data. 
@@ -62,5 +64,4 @@ If calling the following constructor
 
     SerialBuf::SerialBuf(int buflen, int Mode, uint32_t Timeout)
 
-the instance of ByteArray will be allocated from the heap, using the new command. If this is not desirable, there will soon be
-a version of the constructor which accepts a ByteArray instance created by the user.
+the instance of ByteArray will be allocated from the heap, using the new command. If this is not desirable, use the recommended constructor.
