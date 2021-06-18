@@ -24,7 +24,7 @@ Usage
 
 First, include the header file and create the ByteArray and SerialBuf objects. Specify array size, mode and timeout interval. Have in mind that one 
 extra byte must be allocated for the array, so that received data can be null-terminated. 
-For example, if you need a buffer of 10 bytes, 11 bytes must be reserved. The byte following the last received byte will always be 
+For example, if you need a buffer of 10 bytes, you must create a ByteArray of 11 bytes in size. The byte following the last received byte will always be 
 set to zero automatically by the buffer. 
 
     #include "serialbuf.h"
