@@ -2,7 +2,7 @@
 #include "Arduino.h"
 
 
-SerialBuf::SerialBuf(size_t buflen, int Mode = SERIALBUF_TEXTMODE, uint32_t Timeout = 50)
+SerialBuf::SerialBuf(int buflen, int Mode, uint32_t Timeout)
 {
   maxlen = buflen;
   array = new ByteArray(maxlen + 1);
@@ -91,7 +91,7 @@ int SerialBuf::getMode()
   return mode;
 }
 
-int SerialBuf::peek(size_t offset)
+int SerialBuf::peek(int offset)
 {
   if (position + offset < array->getLen())
   {
@@ -113,7 +113,7 @@ bool SerialBuf::isNext()
   return (position + 1) < array->getLen();
 }
 
-bool SerialBuf::isNextn(size_t n)
+bool SerialBuf::isNextn(int n)
 {
   return (position + n) <= array->getLen();
 }
@@ -138,17 +138,17 @@ bool SerialBuf::isAvailable()
   return finished;
 }
 
-size_t SerialBuf::getLength()
+int SerialBuf::getLength()
 {
   return array->getLen();
 }
 
-size_t SerialBuf::getPosition()
+int SerialBuf::getPosition()
 {
   return position;
 }
 
-size_t SerialBuf::getSize() {
+int SerialBuf::getSize() {
   return maxlen;
 }
 

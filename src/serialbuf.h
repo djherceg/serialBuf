@@ -20,30 +20,27 @@
 
 class SerialBuf
 {
-private:
-    size_t maxlen;                  // buffer size
+  private:
+    int maxlen;                  // buffer size
     ByteArray *array;
     bool overflow;                  // data overflow detected on reception
     uint32_t mils;
     uint32_t timeout = 50;          // timeout interval in milliseconds for reception in BINARYMODE
     bool finished;                  // reception finished
-    size_t position;                // current position
+    int position;                // current position
     int mode = SERIALBUF_TEXTMODE;  // BINARYMODE or TEXTMODE (recognize CR+LF or LF as End-of-line and End-of-reception)
 
-public:
-    /** Initialize buffer of specified size in TEXTMODE with a 100ms timeout */
-    SerialBuf(size_t buflen);
-
+  public:
     /** Intialize buffer with the specified size, mode and timeout */
-    SerialBuf(size_t buflen, int Mode, uint32_t Timeout);
-    
+    SerialBuf(int buflen, int Mode = SERIALBUF_TEXTMODE, uint32_t Timeout = 50);
+
     /** Dispose of the buffer */
     ~SerialBuf();
 
 
     /** Clear the buffer */
     void clear();
-    
+
     /** Switch to TEXT mode. Reception is finished when CR is encountered. LF is ignored. */
     void textMode();
 
@@ -57,43 +54,43 @@ public:
     void loop();
 
     /** Returns the character at [position]+offset or -1 if it doesn't exist. */
-    int peek(size_t offset); 
-    
+    int peek(int offset);
+
     /** A character exists at [position] */
-    bool isCurrent();           
+    bool isCurrent();
 
     /** A character exists at [position]+1 */
-    bool isNext();              
+    bool isNext();
 
     /** Returns the next charater from the buffer or -1 if it doesn't exist. */
-    int read(); 
+    int read();
 
     /** At least n more characters exist at [position] */
-    bool isNextn(size_t n);        
+    bool isNextn(int n);
 
     /** Data overflow occured on reception */
-    bool isOverflow();          
+    bool isOverflow();
 
     /** Reception finished, there is a message in the buffer */
-    bool isAvailable(); 
-    
+    bool isAvailable();
+
     /** Returns the length of content in the buffer */
-    size_t getLength();            
-    
+    int getLength();
+
     /** Returns the current position in the buffer */
-    size_t getPosition();
+    int getPosition();
 
     /** Return the maximum content size. */
-    size_t getSize();
+    int getSize();
 
     /** Return binary mode timeout in milliseconds */
     uint32_t getTimeout();
 
     /**
-     * @brief Get the underlying buffer. Consult getLen() and getMaxLen() for the length of the buffer.
-     * 
-     * @return char* 
-     */
+       @brief Get the underlying buffer. Consult getLen() and getMaxLen() for the length of the buffer.
+
+       @return char
+    */
     char* getBuffer();
 };
 
