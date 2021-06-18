@@ -25,7 +25,7 @@ Usage
 First, include the header file and create the ByteArray and SerialBuf objects. Specify array size, mode and timeout interval. Have in mind that one 
 extra byte must be allocated for the array, so that received data can be null-terminated. 
 For example, if you need a buffer of 10 bytes, 11 bytes must be reserved. The byte following the last received byte will always be 
-set to zero automatically by the buffer.
+set to zero automatically by the buffer. This is the recommended way of creating the buffer.
 
     #include "serialbuf.h"
     
@@ -63,4 +63,6 @@ If calling the following constructor
 
     SerialBuf::SerialBuf(int buflen, int Mode, uint32_t Timeout)
 
-the instance of ByteArray will be allocated from the heap, using the new command. If this is not desirable, use the recommended constructor.
+the SerialBuf constructor will create an instance of ByteArray on the heap, using the new command. 
+This can be undesirable on devices with constrained memory. In such cases, use the recommended constructor as described above.
+
