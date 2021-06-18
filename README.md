@@ -2,7 +2,7 @@ SerialBuf overview
 ===================
 Arduino buffer for receiving incoming serial data
 
-Version 2.0.1 / 18.6.2021.
+Version 2.0.2 / 18.6.2021.
 
 The SerialBuf class implements a simple byte-array buffer of a fixed size, which stores bytes received over Serial. When reception is complete, the buffer can be read by the application. The buffer is build around a ByteArray instance, which must be created beforehand.
 
