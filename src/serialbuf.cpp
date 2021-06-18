@@ -4,8 +4,19 @@
 
 SerialBuf::SerialBuf(int buflen, int Mode, uint32_t Timeout)
 {
-  maxlen = buflen;
-  array = new ByteArray(maxlen + 1);
+  init0(new ByteArray(buflen + 1), Mode, Timeout);
+}
+
+SerialBuf::SerialBuf(ByteArray &byteArray, int Mode, uint32_t Timeout)
+{
+  init0(&byteArray, Mode, Timeout);
+}
+
+SerialBuf::init0(ByteArray *byteArray, int Mode, uint32_t Timeout)     // common initialization function for constructors
+{
+  array = byteArray;
+  maxlen = array->getSize()-1;
+  //array = new ByteArray(maxlen + 1);
 
   this->timeout = Timeout;
   mode = Mode;                    // SERIALBUF_BINARYMODE or SERIALBUF_TEXTMODE
@@ -36,7 +47,7 @@ void SerialBuf::loop()
     return;
   }
 
-  if ((mode == SERIALBUF_BINARYMODE) && (array->getLen() > 0) && (millis() - mils > timeout))
+  if ((mode == SERIALBUF_BINARYMODE) && (array->getLength() > 0) && (millis() - mils > timeout))
   {
     finished = true;
     array->nullTerminate();
@@ -62,7 +73,7 @@ void SerialBuf::loop()
     }
 
     if (r > -1) {
-      if (array->getLen() < maxlen)
+      if (array->getLength() < maxlen)
       {
         array->append((char)r);
       }
@@ -93,7 +104,7 @@ int SerialBuf::getMode()
 
 int SerialBuf::peek(int offset)
 {
-  if (position + offset < array->getLen())
+  if (position + offset < array->getLength())
   {
     return (int)(*array)[position + offset];
   }
@@ -105,17 +116,17 @@ int SerialBuf::peek(int offset)
 
 bool SerialBuf::isCurrent()
 {
-  return position < array->getLen();
+  return position < array->getLength();
 }
 
 bool SerialBuf::isNext()
 {
-  return (position + 1) < array->getLen();
+  return (position + 1) < array->getLength();
 }
 
 bool SerialBuf::isNextn(int n)
 {
-  return (position + n) <= array->getLen();
+  return (position + n) <= array->getLength();
 }
 
 
@@ -140,7 +151,7 @@ bool SerialBuf::isAvailable()
 
 int SerialBuf::getLength()
 {
-  return array->getLen();
+  return array->getLength();
 }
 
 int SerialBuf::getPosition()

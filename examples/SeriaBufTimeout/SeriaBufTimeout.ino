@@ -1,6 +1,9 @@
 #include "serialbuf.h"
 
-SerialBuf sbuf(10, SERIALBUF_TEXTMODE, 2000);
+ByteArray barr(11);
+SerialBuf sbuf(barr, SERIALBUF_TEXTMODE, 2000);
+
+//SerialBuf sbuf(10, SERIALBUF_TEXTMODE, 2000);
 
 void setup() {
   Serial.begin(115200);

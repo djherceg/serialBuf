@@ -1,6 +1,6 @@
 /*
-    Serial buffer V2
-    Djordje Herceg, 17.6.2021.
+    Serial buffer V2.0.2
+    Djordje Herceg, 18.6.2021.
 
     GitHub: https://github.com/djherceg/serialBuf
 
@@ -29,10 +29,14 @@ class SerialBuf
     bool finished;                  // reception finished
     int position;                // current position
     int mode = SERIALBUF_TEXTMODE;  // BINARYMODE or TEXTMODE (recognize CR+LF or LF as End-of-line and End-of-reception)
+    init0(ByteArray *byteArray, int Mode, uint32_t Timeout);     // common initialization function for constructors
 
   public:
     /** Intialize buffer with the specified size, mode and timeout */
     SerialBuf(int buflen, int Mode = SERIALBUF_TEXTMODE, uint32_t Timeout = 50);
+
+    /** Initialize buffer with the specified ByteArray instance, mode and timeout. ByteArray must have a capacity of n+1 bytes to allow for the null character. */
+    SerialBuf(ByteArray &byteArray, int Mode = SERIALBUF_TEXTMODE, uint32_t Timeout = 50);
 
     /** Dispose of the buffer */
     ~SerialBuf();

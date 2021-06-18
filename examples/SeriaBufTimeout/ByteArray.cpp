@@ -60,12 +60,12 @@ void ByteArray::clear()
 
 
 
-int ByteArray::getLen()
+int ByteArray::getLength()
 {
     return len;
 }
 
-int ByteArray::getMaxLen()
+int ByteArray::getSize()
 {
     return maxlen;
 }

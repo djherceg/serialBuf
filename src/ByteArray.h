@@ -1,6 +1,6 @@
 /*
-    ByteArray V2
-    Djordje Herceg, 17.6.2021.
+    ByteArray V2.0.2
+    Djordje Herceg, 18.6.2021.
 
     GitHub: https://github.com/djherceg/????
 
@@ -35,7 +35,7 @@ public:
     //int getPos();
 
     /** Vraća trenutnu dužinu bafera */
-    int getLen();
+    int getLength();
 
     /**
      * @brief Sets the length of the buffer contents. Length must be less than maxlen. Resets current position to 0.
@@ -48,7 +48,7 @@ public:
      * 
      * @return int 
      */
-    int getMaxLen();
+    int getSize();
 
     /**
      * @brief Resets the position to 0.
