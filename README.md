@@ -30,11 +30,6 @@ set to zero by the class.
     #include "serialbuf.h"
     SerialBuf sbuf(10, SERIALBUF_TEXTMODE, 2000);
   
-Next, in setup(), initialize the buffer. Specify maximum buffer size, mode and timeout interval. 
-Have in mind that one extra byte will be allocated, so that received data can be null-terminated. 
-For example, if you specify the buffer of 10 bytes, 11 bytes will be reserved, and the byte following the last received byte will always be 
-set to zero by the class.
-
   
 Then, in loop(), make sure to call SerialBuffer::loop often enough so that it doesn't miss incoming serial data. 
 Check SerialBuffer::isAvailable() to determine if there is a message  waiting to be processed in the buffer. 
