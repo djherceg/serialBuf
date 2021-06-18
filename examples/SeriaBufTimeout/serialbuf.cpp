@@ -14,10 +14,7 @@ SerialBuf::SerialBuf(ByteArray &byteArray, int Mode, uint32_t Timeout)
 }
 
 
-SerialBuf::~SerialBuf()
-{
-  delete array;
-}
+
 
 
 

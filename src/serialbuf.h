@@ -35,8 +35,7 @@ class SerialBuf
     /** Initialize buffer with the specified ByteArray instance, mode and timeout. ByteArray must have a capacity of n+1 bytes to allow for the null character. */
     SerialBuf(ByteArray &byteArray, int Mode = SERIALBUF_TEXTMODE, uint32_t Timeout = 50);
 
-    /** Dispose of the buffer */
-    ~SerialBuf();
+
 
 
     /** Clear the buffer */
