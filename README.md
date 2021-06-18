@@ -54,8 +54,8 @@ Note that the buffer can only be read once and forward, byte by byte, using Seri
 However, you can access its contents via SerialBuf::getBuffer() anytime. 
 
 
-ByteArray
-=========
+A note about the ByteArray instance
+===================================
 
 SerialBuf relies on the ByteArray class. It implements a fixed-length char buffer which can append characters one at a time.
 The working version of the ByteArray class is included in this project.
