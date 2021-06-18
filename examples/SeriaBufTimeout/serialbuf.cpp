@@ -2,19 +2,9 @@
 #include "Arduino.h"
 
 
-SerialBuf::SerialBuf(int buflen, int Mode, uint32_t Timeout)
-{
-  init0(new ByteArray(buflen + 1), Mode, Timeout);
-}
-
 SerialBuf::SerialBuf(ByteArray &byteArray, int Mode, uint32_t Timeout)
 {
-  init0(&byteArray, Mode, Timeout);
-}
-
-SerialBuf::init0(ByteArray *byteArray, int Mode, uint32_t Timeout)     // common initialization function for constructors
-{
-  array = byteArray;
+  array = &byteArray;
   maxlen = array->getSize()-1;
   //array = new ByteArray(maxlen + 1);
 
@@ -22,6 +12,7 @@ SerialBuf::init0(ByteArray *byteArray, int Mode, uint32_t Timeout)     // common
   mode = Mode;                    // SERIALBUF_BINARYMODE or SERIALBUF_TEXTMODE
   clear();
 }
+
 
 SerialBuf::~SerialBuf()
 {

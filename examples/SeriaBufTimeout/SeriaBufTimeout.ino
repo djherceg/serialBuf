@@ -1,6 +1,6 @@
 #include "serialbuf.h"
 
-ByteArray barr(11);
+ByteArray barr(11);   // 10 chars for buffer, 1 char for null-termination of strings
 SerialBuf sbuf(barr, SERIALBUF_TEXTMODE, 2000);
 
 //SerialBuf sbuf(10, SERIALBUF_TEXTMODE, 2000);
