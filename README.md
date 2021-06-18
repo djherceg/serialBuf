@@ -57,3 +57,10 @@ ByteArray
 
 SerialBuf relies on the ByteArray class. It implements a fixed-length char buffer which can append characters one at a time.
 The working version of the ByteArray class is included in this project.
+
+If calling the following constructor
+
+    SerialBuf::SerialBuf(int buflen, int Mode, uint32_t Timeout)
+
+the instance of ByteArray will be allocated from the heap, using the new command. If this is not desirable, there will soon be
+a version of the constructor which accepts a ByteArray instance created by the user.
